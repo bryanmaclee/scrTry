@@ -1,0 +1,12 @@
+addTask(task){
+    task.split(" ").join("_")
+    return <li id=~>${task}<button onClick="taskDone(~)"><button onClick="removeTask(~)"></li>
+}
+<!DOCTYPE HTML>
+<html>
+<head><title>todo</title><head>
+const input = <input type="text" width=20 placeholder="enter todo">;
+const button = <button>add todo</button>
+<ul>
+button.onClick(() => {put.end(addTask(input.value))})
+
