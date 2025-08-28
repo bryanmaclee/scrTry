@@ -23,14 +23,14 @@ I(A)
 // let is the default variable type.
 // therefor it requires no prefix.
 // lets work differently than in JS
-// is deleated once called
+// is deleated once called, or falls out of scope.
 
 I = 5   /// kind: LET, type: NUMBER, value: 5
 log(I) // 5
 log(I) // undefined
 
 // const is declared with "*". It maintains normal JS behaviour
-// when it falls out of scope, it is gone
+// when it falls out of scope, it is gone.
 // immutable
 
 *I = "hello"    /// kind: CONST, type: STRING, value: HELLO
