@@ -1,26 +1,15 @@
-addTask(task){
+task:<task>(task){
     task.split(" ").join("_")
     return <li id=~>${task}<button onClick="taskDone(~)"><button onClick="removeTask(~)"></li>
 }
 
-taskState{(state, transition, value)
-    value: 
-    states: .{
-        removed,
-        complete,
-        incomplete,
-    }
-
-    transitions: {(transition)
-        add: 'incomplete',
-        finish: 'complete',
-        remove: 'removed'
-    }
-
-
-
-    states.match(newState)
+addTask(task){
+    return target.latest_child(<task>${task})
 }
+
+removeTask(task)
+
+
 
 <!DOCTYPE HTML>
 <html>
