@@ -24,6 +24,11 @@ I(A)
 // therefor it requires no prefix.
 // lets work differently than in JS
 // is deleated once called, or falls out of scope.
+// lets are immutable.
+
+// side note.
+/// in scrml the only data store that is mutable is an object property
+/// and must by declared as mutable
 
 I = 5   /// kind: LET, type: NUMBER, value: 5
 log(I) // 5
@@ -37,3 +42,10 @@ log(I) // undefined
 log(I)          // hello
 log(I)          // hello
 
+//*** Abstractions
+
+/// QuerySelector
+
+selectedQry = #someElId.innerText;
+
+//compiles to: let selectedQry

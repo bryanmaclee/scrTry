@@ -1,13 +1,19 @@
+// type declaration,  the function "task" returns a "document object" type
+// ~ is a stand in for what would be returned to the left of an = sign if one were present
+// this ~ pattern will aleviate the need for developers to spend time coming up with variable names that are only ever used once.
+
 task:<task>(task){
     task.split(" ").join("_")
     return <li id=~>${task}<button onClick="taskDone(~)"><button onClick="removeTask(~)"></li>
 }
 
 addTask(task){
-    return target.latest_child(<task>${task})
+    return target.appendChild(<task>${task})
 }
 
-removeTask(task)
+removeTask(task){
+
+}
 
 
 
