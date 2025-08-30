@@ -2,7 +2,7 @@
 // ~ is a stand in for what would be returned to the left of an = sign if one were present
 // this ~ pattern will aleviate the need for developers to spend time coming up with variable names that are only ever used once.
 
-task:<task>(task){
+%task:<task>() = (task){
     task.split(" ").join("_")
     return <li id=~>${task}<button onClick="taskDone(~)"><button onClick="removeTask(~)"></li>
 }
@@ -19,7 +19,7 @@ removeTask(task){
 
 <!DOCTYPE HTML>
 <html>
-<head><title>todo</title><head>
+<head><title>todo</title></head>
 #input = <input type="text" width=20 placeholder="enter todo">;
 #button = <button>add todo</button>
 button.onClick(() => {put.end(addTask(input.value))})
