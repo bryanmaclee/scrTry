@@ -16,6 +16,24 @@ SCRML is a programming language that compiles to vanilla JavaScript, HTML, and C
 2. **Markup Context**: HTML elements, static DOM structure
 3. **CSS Context**: Styling rules (Tailwind-inspired approach)
 
+### DOM Selector Shorthand
+SCRML provides shorthand selectors for common DOM queries:
+- **`##elementId`**: `document.getElementById("elementId")`
+- **`..className`**: `document.querySelector(".className")`
+- **`--dataAttribute`**: `document.querySelector("[data-attribute]")`
+
+### Example Usage
+```scrml
+// Get element by ID
+##totalCount.textContent = "5";
+
+// Get element by class
+..todoItem.forEach(item => item.classList.add("completed"));
+
+// Get element by data attribute
+..priorityHigh.forEach(item => item.style.borderColor = "red");
+```
+
 ### Context Switching Rules
 - **Script Context**: Triggered by JavaScript keywords, function calls, variable assignments
 - **Markup Context**: Triggered by top-level HTML elements
@@ -95,6 +113,31 @@ am4 = [%5 && !%3]                   // Multiple of 5 except multiples of 3 (5,10
 ### Declaration Types
 - **let (Default)**: `variable = value` - Immutable, deleted once called or falls out of scope
 - **const**: `*variable = value` - Immutable, maintains normal JavaScript behavior
+
+### Variable Lifetime Optimization
+The default `let` behavior allows for automatic cleanup:
+```scrml
+updateStats() {
+    total = todos.length;           // let variable, deleted after first use
+    completed = todos.filter(t => t.completed).length;  // deleted after first use
+    pending = total - completed;    // deleted after first use
+    
+    ##totalCount.textContent = total;
+    ##completedCount.textContent = completed;  // Error: completed is deleted
+    ##pendingCount.textContent = pending;      // Error: pending is deleted
+}
+
+// To retain variables through the scope, use const:
+updateStats() {
+    total = todos.length;
+    *completed = todos.filter(t => t.completed).length;
+    pending = total - completed;
+    
+    ##totalCount.textContent = total;
+    ##completedCount.textContent = completed;  // Works: const persists
+    ##pendingCount.textContent = pending; 
+}
+```
 
 ### Examples
 ```scrml
