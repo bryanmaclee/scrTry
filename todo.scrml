@@ -1,0 +1,176 @@
+// Todo App in SCRML
+// Demonstrating DOB system, shapes, functions, and context switching
+
+// Shape definitions for our todo system
+%todoItem:<>() = (text, attributes) {
+    *{ id, completed, priority } = attributes;
+    *status = completed ? "completed" : "pending";
+    *priorityClass = priority || "medium";
+    
+    return <li class="todo-item ${status} priority-${priorityClass}" data-id="${id}">
+        <input type="checkbox" checked="${completed}" onChange="toggleTodo(${id})" />
+        <span class="todo-text">${text}</span>
+        <button onClick="deleteTodo(${id})" class="delete-btn">×</button>
+        <span class="priority-badge">${priority}</span>
+    </li>
+}
+
+%todoList:<>() = (children, attributes) {
+    *{ filter } = attributes;
+    *filterClass = filter ? `filter-${filter}` : "";
+    
+    return <ul class="todo-list ${filterClass}">
+        ${children}
+    </ul>
+}
+
+%todoForm:<>() = (children, attributes) {
+    return <form class="todo-form" onSubmit="addNewTodo(event)">
+        <input type="text" id="newTodoInput" placeholder="What needs to be done?" required />
+        <select id="prioritySelect">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+        </select>
+        <button type="submit">Add Todo</button>
+    </form>
+}
+
+%todoStats:<>() = (children, attributes) {
+    return <div class="todo-stats">
+        <span class="total">Total: <span id="totalCount">0</span></span>
+        <span class="completed">Completed: <span id="completedCount">0</span></span>
+        <span class="pending">Pending: <span id="pendingCount">0</span></span>
+    </div>
+}
+
+// Todo data management
+*todos = [];
+*todoCounter = 0;
+
+// Shape for todo data validation
+%todoData = (text: String, priority: String, completed: Boolean);
+
+// Functions for todo operations
+addTodo(text, priority = "medium") {
+    *newTodo = {
+        id: todoCounter++,
+        text: text,
+        priority: priority,
+        completed: false,
+        createdAt: Date.now()
+    };
+    
+    todos.push(newTodo);
+    renderTodos();
+    updateStats();
+    return newTodo;
+}
+
+toggleTodo(id) {
+    *todo = todos.find(t => t.id === id);
+    if (todo) {
+        todo.completed = !todo.completed;
+        renderTodos();
+        updateStats();
+    }
+}
+
+deleteTodo(id) {
+    todos = todos.filter(t => t.id !== id);
+    renderTodos();
+    updateStats();
+}
+
+addNewTodo(event) {
+    event.preventDefault();
+    *input = ##newTodoInput;
+    *priority = ##prioritySelect.value;
+    
+    if (input.value.trim()) {
+        addTodo(input.value.trim(), priority);
+        input.value = "";
+    }
+}
+
+renderTodos() {
+    if (##todoList) {
+        ##todoList.innerHTML = todos.map(todo => 
+            <todoItem id="${todo.id}" completed="${todo.completed}" priority="${todo.priority}">
+                ${todo.text}
+            </todoItem>
+        ).join("");
+    }
+}
+
+updateStats() {
+    total = todos.length;
+    *completed = todos.filter(t => t.completed).length;
+    pending = total - completed;
+    
+    ##totalCount.textContent = total;
+    ##completedCount.textContent = completed;
+    ##pendingCount.textContent = pending;
+}
+
+filterTodos(filter) {
+    if (##todoList) {
+        ##todoList.setAttribute("filter", filter);
+        
+        *filteredTodos = filter === "all" ? todos :
+                        filter === "completed" ? todos.filter(t => t.completed) :
+                        todos.filter(t => !t.completed);
+        
+        ##todoList.innerHTML = filteredTodos.map(todo => 
+            <todoItem id="${todo.id}" completed="${todo.completed}" priority="${todo.priority}">
+                ${todo.text}
+            </todoItem>
+        ).join("");
+    }
+}
+
+// Initialize the app
+initializeApp() {
+    // Add some sample todos
+    addTodo("Learn SCRML basics", "high");
+    addTodo("Build a todo app", "high");
+    addTodo("Implement DOB system", "medium");
+    addTodo("Add CSS styling", "low");
+    
+    // Set up event listeners
+    document.addEventListener("DOMContentLoaded", () => {
+        renderTodos();
+        updateStats();
+    });
+}
+
+// Main HTML structure
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCRML Todo App</title>
+
+</head>
+<body>
+    <h1>SCRML Todo App</h1>
+    
+    <todoForm></todoForm>
+    
+    <div class="filter-controls">
+        <button onClick="filterTodos('all')">All</button>
+        <button onClick="filterTodos('pending')">Pending</button>
+        <button onClick="filterTodos('completed')">Completed</button>
+    </div>
+    
+    <todoStats></todoStats>
+    
+    <todoList id="todoList" filter="all"></todoList>
+    
+    <script>
+        // Initialize the app
+        initializeApp();
+    </script>
+</body>
+</html>
